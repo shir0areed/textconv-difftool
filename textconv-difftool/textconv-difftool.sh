@@ -50,24 +50,24 @@ CMD=$(git config --get difftool.$TOOL.cmd)
 LOCAL=$1
 REMOTE=$2
 
-EXT1=${LOCAL##*.}
-EXT2=${REMOTE##*.}
+LOCAL_EXT=${LOCAL##*.}
+REMOTE_EXT=${REMOTE##*.}
 
-if [[ "$EXT2" == "$REMOTE" ]]; then
+if [[ "$REMOTE_EXT" == "$REMOTE" ]]; then
     echo "File has no extension, compare without textconv."
     eval $CMD
     exit
 fi
 
-if [[ $EXT1 != $EXT2 ]]; then
+if [[ $LOCAL_EXT != $REMOTE_EXT ]]; then
     echo "Extensions not match, compare without textconv."
     eval $CMD
     exit
 fi
 
-TEXTCONV=$(git config --get difftool.$EXT1.textconv)
+TEXTCONV=$(git config --get difftool.$REMOTE_EXT.textconv)
 if [[ $? -ne 0 ]]; then
-    echo "'$EXT1' textconv not found, compare without textconv."
+    echo "'$REMOTE_EXT' textconv not found, compare without textconv."
     eval $CMD
     exit
 fi
