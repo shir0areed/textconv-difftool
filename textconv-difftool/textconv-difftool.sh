@@ -74,8 +74,8 @@ fi
 
 TEXTCONV=$(eval echo $TEXTCONV)
 
-LOCAL_TXT=.git/textconv_old.txt
-REMOTE_TXT=.git/textconv.txt
+LOCAL_TXT=$(mktemp)
+REMOTE_TXT=$(mktemp)
 LOCAL_CMD="\"$TEXTCONV\" \"$LOCAL\" > \"$LOCAL_TXT\""
 REMOTE_CMD="\"$TEXTCONV\" \"$REMOTE\" > \"$REMOTE_TXT\""
 eval $LOCAL_CMD
