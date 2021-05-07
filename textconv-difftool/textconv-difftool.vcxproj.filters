@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="textconv-difftool.sh">
+    <None Include="textconv difftool.sh">
       <Filter>ソース ファイル</Filter>
     </None>
   </ItemGroup>
