@@ -3,6 +3,7 @@
 #set -x
 
 NAME="textconv-difftool"
+FILE_NAME=$(basename "$0")
 
 if [[ $# -eq 0 ]]; then
     echo "[$NAME setup mode]"
@@ -27,7 +28,7 @@ if [[ $# -eq 0 ]]; then
             DIR=$(cmd //c cd)
             set -x
             git config --global diff.tool $NAME
-            git config --global difftool.$NAME.cmd "\"$DIR\\$(basename $0)\" \"\$LOCAL\" \"\$REMOTE\""
+            git config --global difftool.$NAME.cmd "\"$DIR\\$FILE_NAME\" \"\$LOCAL\" \"\$REMOTE\""
             git config --global difftool.$NAME.tool $DIFFTOOL
             set +x
             echo "Completed."
@@ -40,7 +41,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 if [[ $# -ne 2 ]]; then
-    echo "Usage: $(basename $0) <LOCAL> <REMOTE>"
+    echo "Usage: $FILE_NAME <LOCAL> <REMOTE>"
     exit 1
 fi
 
