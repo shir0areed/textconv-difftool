@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 NAME="textconv-difftool"
 FILE_NAME=$(basename "$0")
