@@ -99,7 +99,7 @@ if [[ $? -ne 0 ]]; then
     exit
 fi
 
-cd $(git rev-parse --show-toplevel)
+cd "$(git rev-parse --show-toplevel)"
 TEXTCONV=$(eval echo $TEXTCONV)
 
 LOCAL_TXT=$(mktemp)
