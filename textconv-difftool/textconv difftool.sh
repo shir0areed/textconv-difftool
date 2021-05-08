@@ -1,12 +1,14 @@
 #!/bin/bash
 
-#set -x
+set -x
 
 NAME="textconv-difftool"
 FILE_NAME=$(basename "$0")
 
+cd $(dirname "$0")
+
 if [[ $# -eq 0 ]]; then
-    echo "[$NAME setup mode]"
+    echo "[$NAME main setup mode]"
     DIFFTOOL=$(git config --get diff.tool)
     if [[ $? -ne 0 ]]; then
         echo "difftool not found, $NAME cannot be installed."
@@ -15,8 +17,8 @@ if [[ $# -eq 0 ]]; then
         if [[ "$ANS" == "y" ]]; then
             TOOL=$(git config --get difftool.$NAME.tool)
             set -x
-            git config --global diff.tool $TOOL
-            git config --global --remove-section difftool.$NAME
+            git config diff.tool $TOOL
+            git config --remove-section difftool.$NAME
             set +x
             echo "Completed."
         else
@@ -27,14 +29,29 @@ if [[ $# -eq 0 ]]; then
         if [[ "$ANS" == "y" ]]; then
             DIR=$(cmd //c cd)
             set -x
-            git config --global diff.tool $NAME
-            git config --global difftool.$NAME.cmd "\"$DIR\\$FILE_NAME\" \"\$LOCAL\" \"\$REMOTE\""
-            git config --global difftool.$NAME.tool $DIFFTOOL
+            git config diff.tool $NAME
+            git config difftool.$NAME.cmd "\"$DIR\\$FILE_NAME\" \"\$LOCAL\" \"\$REMOTE\""
+            git config difftool.$NAME.tool $DIFFTOOL
             set +x
             echo "Completed."
         else
             echo "Cancelled."
         fi
+    fi
+    read -p "Setup finished. Press [Enter] key to exit."
+    exit
+fi
+
+if [[ $# -eq 1 ]]; then
+    echo "[$NAME tool setup mode]"
+    TOOL_FILE_NAME=$(basename "$1")
+    read -p "Install $TOOL_FILE_NAME? [y/n]: " ANS
+    if [[ "$ANS" == "y" ]]; then
+        read -p "Type the target extension: ." EXT
+        git config difftool.$EXT.textconv "\"$1\""
+        echo "Completed."
+    else
+        echo "Cancelled."
     fi
     read -p "Setup finished. Press [Enter] key to exit."
     exit
