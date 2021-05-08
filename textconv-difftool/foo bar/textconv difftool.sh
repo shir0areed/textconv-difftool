@@ -5,7 +5,8 @@
 NAME="textconv-difftool"
 FILE_NAME=$(basename "$0")
 
-cd $(dirname "$0")
+cd "$(dirname "$0")"
+SH_DIR=$(git rev-parse --show-prefix)
 
 if [[ $# -eq 0 ]]; then
     echo "[$NAME main setup mode]"
@@ -27,10 +28,9 @@ if [[ $# -eq 0 ]]; then
     else
         read -p "Install $NAME? [y/n]: " ANS
         if [[ "$ANS" == "y" ]]; then
-            DIR=$(cmd //c cd)
             set -x
             git config diff.tool $NAME
-            git config difftool.$NAME.cmd "\"$DIR\\$FILE_NAME\" \"\$LOCAL\" \"\$REMOTE\""
+            git config difftool.$NAME.cmd "\".\\$SH_DIR/$FILE_NAME\" \"\$LOCAL\" \"\$REMOTE\""
             git config difftool.$NAME.tool $DIFFTOOL
             set +x
             echo "Completed."
@@ -44,11 +44,13 @@ fi
 
 if [[ $# -eq 1 ]]; then
     echo "[$NAME tool setup mode]"
+    cd "$(dirname "$1")"
+    TOOL_DIR=$(git rev-parse --show-prefix)
     TOOL_FILE_NAME=$(basename "$1")
     read -p "Install $TOOL_FILE_NAME? [y/n]: " ANS
     if [[ "$ANS" == "y" ]]; then
         read -p "Type the target extension: ." EXT
-        git config difftool.$EXT.textconv "\"$1\""
+        git config difftool.$EXT.textconv "\"./$TOOL_DIR/$TOOL_FILE_NAME\""
         echo "Completed."
     else
         echo "Cancelled."
@@ -90,6 +92,7 @@ if [[ $? -ne 0 ]]; then
     exit
 fi
 
+cd $(git rev-parse --show-toplevel)
 TEXTCONV=$(eval echo $TEXTCONV)
 
 LOCAL_TXT=$(mktemp)
