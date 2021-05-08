@@ -9,21 +9,28 @@ cd "$(dirname "$0")"
 SH_DIR=$(git rev-parse --show-prefix)
 
 if [[ $# -eq 0 ]]; then
-    echo "[$NAME main setup mode]"
+    echo "[$NAME setup mode]"
     DIFFTOOL=$(git config --get diff.tool)
     if [[ $? -ne 0 ]]; then
         echo "difftool not found, $NAME cannot be installed."
     elif [[ "$DIFFTOOL" == "$NAME" ]]; then
-        read -p "Uninstall $NAME? [y/n]: " ANS
+        read -p "Uninstall textconv? [y/n]: " ANS
         if [[ "$ANS" == "y" ]]; then
-            TOOL=$(git config --get difftool.$NAME.tool)
-            set -x
-            git config diff.tool $TOOL
-            git config --remove-section difftool.$NAME
-            set +x
+            read -p "Type the target extension: ." EXT
+            git config --remove-section difftool.$EXT
             echo "Completed."
         else
-            echo "Cancelled."
+            read -p "Uninstall $NAME? [y/n]: " ANS
+            if [[ "$ANS" == "y" ]]; then
+                TOOL=$(git config --get difftool.$NAME.tool)
+                set -x
+                git config diff.tool $TOOL
+                git config --remove-section difftool.$NAME
+                set +x
+                echo "Completed."
+            else
+                echo "Cancelled."
+            fi
         fi
     else
         read -p "Install $NAME? [y/n]: " ANS
@@ -43,7 +50,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 if [[ $# -eq 1 ]]; then
-    echo "[$NAME tool setup mode]"
+    echo "[$NAME setup mode]"
     cd "$(dirname "$1")"
     TOOL_DIR=$(git rev-parse --show-prefix)
     TOOL_FILE_NAME=$(basename "$1")
